@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 import requests
 
 # Backend API URL
@@ -21,3 +22,25 @@ if st.button("Scrape Users"):
         st.success(f"Successfully scraped {num_users} users.")
     else:
         st.error("Failed to scrape users.")
+
+# Button to fetch random user and nearest users
+st.header("Fetch Random User and Nearest Users")
+if st.button("Fetch Random User and Nearest Users"):
+    response = requests.get(f"{API_URL}/random_user_and_nearest_users")
+    if response.status_code == 200:
+        data = response.json()
+        random_user = data["random_user"]
+        nearest_users = data["nearest_users"]
+
+        # Displaying random user details
+        st.subheader("Random User")
+        st.write(f"Name: {random_user['first_name']} {random_user['last_name']}")
+        st.write(f"Email: {random_user['email']}")
+        st.write(f"Coordinates: ({random_user['latitude']}, {random_user['longitude']})")
+
+        map_data = pd.DataFrame(nearest_users)
+
+        st.subheader("Nearest Users on Map")
+        st.map(map_data[['latitude', 'longitude']])
+    else:
+        st.error("Failed to fetch users.")
