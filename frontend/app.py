@@ -42,5 +42,7 @@ if st.button("Fetch Random User and Nearest Users"):
 
         st.subheader("Nearest Users on Map")
         st.map(map_data[['latitude', 'longitude']])
+    elif response.status_code == 404:
+        st.error("No user found.")
     else:
         st.error("Failed to fetch users.")
